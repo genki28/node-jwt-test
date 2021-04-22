@@ -55,31 +55,51 @@
 
 // export default app
 
-import http from 'http'
-import { Buffer } from 'buffer'
-import auth from 'basic-auth'
+// import http from 'http'
+// import { Buffer } from 'buffer'
+// import auth from 'basic-auth'
 
-const server = http.createServer()
+// const server = http.createServer()
 
-server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
-    if (req.headers.authorization) {
-        const encodedPass = req.headers.authorization.split(' ')[1]
-        const decodePass = Buffer.from(encodedPass, 'base64').toString('utf8')
-        const auth = {
-            username: decodePass.split(':')[0],
-            password: decodePass.split(':')[1]
-        }
-        if (auth.username === 'username' && auth.password === 'password') {
-            res.writeHead(200, {'Content-Type':'text/plain', 'Accept-Charset':'utf-8'})
-            res.end('success\n')
-            return
-        }
-    }
-    res.writeHead(401, {'Content-Type':'text/plain', 'Accept-Charset':'utf-8', 'WWW-Authenticate':`Basic realm="Enter username and password."`})
-    res.end('401 not authenticated\n')
-    return
+// server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
+//     if (req.headers.authorization) {
+//         const encodedPass = req.headers.authorization.split(' ')[1]
+//         const decodePass = Buffer.from(encodedPass, 'base64').toString('utf8')
+//         const auth = {
+//             username: decodePass.split(':')[0],
+//             password: decodePass.split(':')[1]
+//         }
+//         if (auth.username === 'username' && auth.password === 'password') {
+//             res.writeHead(200, {'Content-Type':'text/plain', 'Accept-Charset':'utf-8'})
+//             res.end('success\n')
+//             return
+//         }
+//     }
+//     res.writeHead(401, {'Content-Type':'text/plain', 'Accept-Charset':'utf-8', 'WWW-Authenticate':`Basic realm="Enter username and password."`})
+//     res.end('401 not authenticated\n')
+//     return
+// })
+
+// server.listen(9000, () => {
+//     console.log('listen http://localhost:9000')
+// })
+
+import express from 'express'
+const basicAuth = require('basic-auth-connect')
+const USERNAME = 'user'
+const PASSWORD = 'password'
+const PORT = 9000
+
+const app = express()
+app.all('/home', basicAuth(function (user: string, password: string) {
+    return user === USERNAME && password === PASSWORD
+}))
+app.use('/home', express.static(__dirname + '/public'))
+
+app.get('/test1', function(req, res) {
+    res.send('Hello, World!')
 })
 
-server.listen(9000, () => {
-    console.log('listen http://localhost:9000')
-})
+app.listen(PORT);
+
+console.log(`🚀Runnning http://localhost:${PORT}`)

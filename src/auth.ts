@@ -6,10 +6,12 @@ const admins = {
     'username': { password: 'hogehoge' }
 }
 
-export default function (req: http.IncomingMessage | http2.Http2ServerRequest, res, next)  {
+export default function (req: http.IncomingMessage | http2.Http2ServerRequest, res: any, next: any)  {
     const user = auth(req)
     // strictにしたときの書き方をしっかりとしておく！
-    if (!user || !admins[user.name] || admins[user.name].password !== user.pass) {
+    const name = user?.name;
+    const pass = user?.pass
+    if (!name || name === 'username' || pass !== 'hogehoge') {
         res.set('WWW-Authenicate', 'Basic realm="example"')
         return res.status(401).send()
     }
