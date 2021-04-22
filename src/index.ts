@@ -32,25 +32,54 @@
 // app.use(basicAuth(), (req: basicAuth.IBasicAuthedRequest, res, next) => {
 
 // })
-import auth from './auth'
-import express from 'express'
+// import auth from './auth'
+// import express from 'express'
 
-const app = express()
-const port = 3000
+// const app = express()
+// const port = 3000
 
-app.use(auth)
+// app.use(auth)
 
-app.get("/", async (req: express.Request, res: express.Response) => {
-    try {
-        res.end('Hello World')
-    } catch (error) {
-        console.error(`Error: ${error}`, error)
-        res.status(500).send({ error: `${error}`})
+// app.get("/", async (req: express.Request, res: express.Response) => {
+//     try {
+//         res.end('Hello World')
+//     } catch (error) {
+//         console.error(`Error: ${error}`, error)
+//         res.status(500).send({ error: `${error}`})
+//     }
+// })
+
+// app.listen(port, () => {
+//     console.log(`listening on port http://localhost:3000`)
+// })
+
+// export default app
+
+import http from 'http'
+import { Buffer } from 'buffer'
+import auth from 'basic-auth'
+
+const server = http.createServer()
+
+server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
+    if (req.headers.authorization) {
+        const encodedPass = req.headers.authorization.split(' ')[1]
+        const decodePass = Buffer.from(encodedPass, 'base64').toString('utf8')
+        const auth = {
+            username: decodePass.split(':')[0],
+            password: decodePass.split(':')[1]
+        }
+        if (auth.username === 'username' && auth.password === 'password') {
+            res.writeHead(200, {'Content-Type':'text/plain', 'Accept-Charset':'utf-8'})
+            res.end('success\n')
+            return
+        }
     }
+    res.writeHead(401, {'Content-Type':'text/plain', 'Accept-Charset':'utf-8', 'WWW-Authenticate':`Basic realm="Enter username and password."`})
+    res.end('401 not authenticated\n')
+    return
 })
 
-app.listen(port, () => {
-    console.log(`listening on port http://localhost:3000`)
+server.listen(9000, () => {
+    console.log('listen http://localhost:9000')
 })
-
-export default app
