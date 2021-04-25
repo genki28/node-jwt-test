@@ -1,7 +1,7 @@
 "use strict";
 // import http from 'http'
 // import { Buffer } from 'buffer'
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 // const server = http.createServer()
 // server.on('request', (req:http.IncomingMessage, res:http.ServerResponse) => {
 //     if (req.headers.authorization) {
@@ -69,12 +69,12 @@ exports.__esModule = true;
 //     console.log('listen http://localhost:9000')
 // })
 // import express from 'express'
-var express = require("express");
-var basicAuth = require('basic-auth-connect');
-var USERNAME = 'user';
-var PASSWORD = 'password';
-var PORT = 9000;
-var app = express();
+const express = require("express");
+const basicAuth = require('basic-auth-connect');
+const USERNAME = 'user';
+const PASSWORD = 'password';
+const PORT = 9000;
+const app = express();
 app.all('/home', basicAuth(function (user, password) {
     return user === USERNAME && password === PASSWORD;
 }));
@@ -83,4 +83,5 @@ app.get('/test1', function (req, res) {
     res.send('Hello, World!');
 });
 app.listen(PORT);
-console.log("\uD83D\uDE80Runnning http://localhost:" + PORT);
+console.log(`🚀Runnning http://localhost:${PORT}`);
+//# sourceMappingURL=index.js.map

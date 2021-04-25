@@ -84,7 +84,8 @@
 //     console.log('listen http://localhost:9000')
 // })
 
-import express from 'express'
+// import express from 'express'
+import express = require('express')
 const basicAuth = require('basic-auth-connect')
 const USERNAME = 'user'
 const PASSWORD = 'password'
